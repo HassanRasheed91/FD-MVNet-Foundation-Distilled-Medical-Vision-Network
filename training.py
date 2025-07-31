@@ -56,8 +56,7 @@ class AdvancedDistillationLoss(nn.Module):
 
 class FoundationModelTrainer:
     """
-    Trainer class that handles training of the teacher ensemble and student model,
-    as well as evaluation and integration with the visualization engine.
+    Trainer class that handles training of the teacher ensemble and student model
     """
     def __init__(self, device, save_dir='./results'):
         self.device = device
@@ -81,7 +80,7 @@ class FoundationModelTrainer:
     
     def train_teacher(self, teacher_model, train_loader, val_loader, epochs=25):
         """Stage 1: Train the foundation model teacher ensemble."""
-        logging.info("🎓 STAGE 1: Training Foundation Model Teacher Ensemble")
+        logging.info(" STAGE 1: Training Foundation Model Teacher Ensemble")
         logging.info("="*60)
         
         teacher_model.train()
@@ -154,7 +153,7 @@ class FoundationModelTrainer:
                 best_acc = val_acc
                 patience_counter = 0
                 torch.save(teacher_model.state_dict(), self.save_dir / 'teacher_best.pth')
-                logging.info(f"✅ New best teacher accuracy: {val_acc:.2f}%")
+                logging.info(f" New best teacher accuracy: {val_acc:.2f}%")
             else:
                 patience_counter += 1
             
@@ -168,13 +167,13 @@ class FoundationModelTrainer:
         
         # Load best model weights before returning
         teacher_model.load_state_dict(torch.load(self.save_dir / 'teacher_best.pth'))
-        logging.info(f"🎓 Teacher training completed. Best accuracy: {best_acc:.2f}%")
+        logging.info(f" Teacher training completed. Best accuracy: {best_acc:.2f}%")
         
         return best_acc
     
     def train_student(self, student_model, teacher_model, train_loader, val_loader, epochs=40):
         """Stage 2: Train the student model with knowledge distillation."""
-        logging.info("🎓 STAGE 2: Training Student with Knowledge Distillation")
+        logging.info(" STAGE 2: Training Student with Knowledge Distillation")
         logging.info("="*60)
         
         # Freeze teacher model parameters
@@ -258,10 +257,10 @@ class FoundationModelTrainer:
                 best_acc = val_acc
                 patience_counter = 0
                 torch.save(student_model.state_dict(), self.save_dir / 'student_best.pth')
-                logging.info(f"✅ New best student accuracy: {val_acc:.2f}%")
+                logging.info(f" New best student accuracy: {val_acc:.2f}%")
                 
                 if val_acc >= 99.0:
-                    logging.info(f"🎯 TARGET ACHIEVED! {val_acc:.2f}% >= 99.0%")
+                    logging.info(f" TARGET ACHIEVED! {val_acc:.2f}% >= 99.0%")
             else:
                 patience_counter += 1
             
@@ -273,7 +272,7 @@ class FoundationModelTrainer:
             
             # Early stopping if no improvement for a while (after some epochs)
             if patience_counter >= patience and epoch > 20:
-                logging.info(f"⏰ Early stopping at epoch {epoch+1}")
+                logging.info(f" Early stopping at epoch {epoch+1}")
                 break
         
         # Load best model weights
@@ -318,7 +317,7 @@ class FoundationModelTrainer:
     
     def generate_comprehensive_results(self, teacher_model, student_model, test_loader, results_dict):
         """Generate comprehensive research results with all visualizations."""
-        logging.info("📊 Generating comprehensive research visualizations...")
+        logging.info(" Generating comprehensive research visualizations...")
         
         # 1. Training curves
         self.viz_engine.plot_training_curves(self.history, "Foundation Model COVID Detection Training")
@@ -348,7 +347,7 @@ class FoundationModelTrainer:
         # 8. Generate a research summary markdown file
         self.generate_research_summary(results_dict, teacher_metrics, student_metrics, teacher_auc, student_auc)
         
-        logging.info("✅ All research visualizations generated successfully!")
+        logging.info(" All research visualizations generated successfully!")
         
         return {
             'teacher_metrics': teacher_metrics,
@@ -367,13 +366,13 @@ class FoundationModelTrainer:
             f.write("# Foundation Model-Enhanced COVID Detection System\n")
             f.write("## Research Summary & Results\n\n")
             
-            f.write("### 🎯 Key Achievements\n")
+            f.write("###  Key Achievements\n")
             f.write(f"- **Student Model Accuracy**: {results_dict.get('student_accuracy', 0):.2f}%\n")
             f.write(f"- **Teacher Model Accuracy**: {results_dict.get('teacher_accuracy', 0):.2f}%\n")
             f.write(f"- **Parameter Reduction**: {results_dict.get('reduction_ratio', 0):.1f}x\n")
             f.write(f"- **Model Size**: {results_dict.get('student_params', 0) * 4 / (1024*1024):.1f} MB\n\n")
             
-            f.write("### 📊 Detailed Performance Metrics\n\n")
+            f.write("###  Detailed Performance Metrics\n\n")
             f.write("#### Teacher Ensemble Model\n")
             f.write(f"- Accuracy: {teacher_metrics['accuracy']:.4f}\n")
             f.write(f"- Precision: {teacher_metrics['precision']:.4f}\n")
@@ -388,7 +387,7 @@ class FoundationModelTrainer:
             f.write(f"- F1-Score: {student_metrics['f1_score']:.4f}\n")
             f.write(f"- AUC-ROC: {student_auc:.4f}\n\n")
             
-            f.write("### 📁 Generated Files\n")
+            f.write("###  Generated Files\n")
             f.write("- `training_curves.png`: Training progress visualization\n")
             f.write("- `model_comparison.png`: Performance and efficiency comparison\n")
             f.write("- `confusion_matrices.png`: Detailed classification results\n")
@@ -400,4 +399,4 @@ class FoundationModelTrainer:
             f.write("- `foundation_models.pth`: Trained model weights\n")
             f.write("- `training.log`: Complete training logs\n\n")
         
-        logging.info(f"📝 Research summary saved to: {summary_path}")
+        logging.info(f" Research summary saved to: {summary_path}")
