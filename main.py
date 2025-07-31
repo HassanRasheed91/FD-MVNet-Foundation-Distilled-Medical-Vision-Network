@@ -37,14 +37,14 @@ if torch.cuda.is_available():
 
 def run_foundation_model_experiment(data_dir, device, teacher_epochs=25, student_epochs=40):
     """Run complete foundation model experiment with comprehensive visualization"""
-    print("🎓 FOUNDATION MODEL COVID DETECTION EXPERIMENT")
+    print(" FOUNDATION MODEL COVID DETECTION EXPERIMENT")
     print("="*80)
     results_dir = Path('./results')
     results_dir.mkdir(exist_ok=True)
     
     try:
         # 1. Data pipeline
-        print("\n1️⃣ Setting up enhanced data pipeline...")
+        print("\n Setting up enhanced data pipeline...")
         train_transform, val_transform = get_enhanced_transforms()
         train_dataset = ResearchGradeCOVIDDataset(data_dir, 'train', train_transform)
         val_dataset = ResearchGradeCOVIDDataset(data_dir, 'val', val_transform)
@@ -55,10 +55,10 @@ def run_foundation_model_experiment(data_dir, device, teacher_epochs=25, student
                                   num_workers=4, pin_memory=True, persistent_workers=True)
         val_loader = DataLoader(val_dataset, batch_size=16, shuffle=False,
                                 num_workers=4, pin_memory=True, persistent_workers=True)
-        print(f"✅ Data loaded: {len(train_dataset)} train, {len(val_dataset)} val")
+        print(f" Data loaded: {len(train_dataset)} train, {len(val_dataset)} val")
         
         # 2. Initialize models
-        print("\n2️⃣ Initializing foundation models...")
+        print("\n Initializing foundation models...")
         teacher_model = FoundationModelTeacher(num_classes=2).to(device)
         student_model = LightweightMedicalStudent(num_classes=2, width_multiplier=1.2).to(device)
         
@@ -67,7 +67,7 @@ def run_foundation_model_experiment(data_dir, device, teacher_epochs=25, student
         student_params = sum(p.numel() for p in student_model.parameters())
         reduction_ratio = teacher_params / student_params
         
-        print(f"📊 Model Statistics:")
+        print(f" Model Statistics:")
         print(f"   Teacher: {teacher_params:,} parameters")
         print(f"   Student: {student_params:,} parameters")
         print(f"   Reduction: {reduction_ratio:.1f}x")
@@ -76,15 +76,15 @@ def run_foundation_model_experiment(data_dir, device, teacher_epochs=25, student
         trainer = FoundationModelTrainer(device, save_dir=results_dir)
         
         # Stage 1: Train teacher
-        print(f"\n3️⃣ Stage 1: Training Foundation Teacher ({teacher_epochs} epochs)...")
+        print(f"\n Stage 1: Training Foundation Teacher ({teacher_epochs} epochs)...")
         teacher_acc = trainer.train_teacher(teacher_model, train_loader, val_loader, teacher_epochs)
         
         # Stage 2: Train student
-        print(f"\n4️⃣ Stage 2: Training Student with Distillation ({student_epochs} epochs)...")
+        print(f"\n Stage 2: Training Student with Distillation ({student_epochs} epochs)...")
         student_acc = trainer.train_student(student_model, teacher_model, train_loader, val_loader, student_epochs)
         
         # 5. Final comprehensive evaluation
-        print(f"\n5️⃣ Comprehensive Evaluation & Visualization...")
+        print(f"\n Comprehensive Evaluation & Visualization...")
         teacher_final_acc, _ = trainer.evaluate_model(teacher_model, val_loader)
         student_final_acc, _ = trainer.evaluate_model(student_model, val_loader)
         
@@ -105,7 +105,7 @@ def run_foundation_model_experiment(data_dir, device, teacher_epochs=25, student
         
         # 6. Results summary
         print("\n" + "="*80)
-        print("🏆 FOUNDATION MODEL EXPERIMENT RESULTS")
+        print(" FOUNDATION MODEL EXPERIMENT RESULTS")
         print("="*80)
         print(f"Teacher Accuracy: {teacher_final_acc:.2f}%")
         print(f"Student Accuracy: {student_final_acc:.2f}%")
@@ -116,27 +116,26 @@ def run_foundation_model_experiment(data_dir, device, teacher_epochs=25, student
         
         success = student_final_acc >= 99.0
         if success:
-            print(f"\n🎉 🏆 SUCCESS! ACHIEVED 99%+ ACCURACY! 🏆 🎉")
+            print(f"\n SUCCESS! ACHIEVED 99%+ ACCURACY! ")
             print(f"  Student accuracy: {student_final_acc:.2f}% >= 99.0%")
             print(f"  Significant parameter reduction: {reduction_ratio:.1f}x")
-            print(f"  Deployment-ready lightweight model")
             print(f"  Foundation model knowledge successfully transferred")
         elif student_final_acc >= 95.0:
-            print(f"\n📊 GOOD PROGRESS: {student_final_acc:.2f}%")
-            print(f"💡 Close to target! Consider:")
+            print(f"\n GOOD PROGRESS: {student_final_acc:.2f}%")
+            print(f" Close to target! Consider:")
             print(f"   • Fine-tuning hyperparameters")
             print(f"   • Adding more foundation models to teacher")
             print(f"   • Increasing training epochs")
         else:
-            print(f"\n🔧 NEEDS IMPROVEMENT: {student_final_acc:.2f}%")
-            print(f"💡 Recommendations:")
+            print(f"\n NEEDS IMPROVEMENT: {student_final_acc:.2f}%")
+            print(f" Recommendations:")
             print(f"   • Check data quality and balance")
             print(f"   • Verify foundation models are loading correctly")
             print(f"   • Increase model capacity (width_multiplier)")
             print(f"   • Extend training duration")
         
         # 7. Save comprehensive results
-        print(f"\n6️⃣ Saving comprehensive results...")
+        print(f"\n Saving comprehensive results...")
         results_dict.update({
             'comprehensive_metrics': comprehensive_metrics,
             'model_size_mb': student_params * 4 / (1024*1024),
@@ -179,7 +178,7 @@ def run_foundation_model_experiment(data_dir, device, teacher_epochs=25, student
         }, results_dir / 'foundation_models.pth')
         
         # Generate publication-ready summary
-        print(f"\n📄 Generating publication summary...")
+        print(f"\n Generating publication summary...")
         performance_summary = pd.DataFrame({
             'Model': ['Teacher Ensemble', 'Lightweight Student'],
             'Accuracy (%)': [f"{teacher_final_acc:.2f}", f"{student_final_acc:.2f}"],
@@ -196,7 +195,7 @@ def run_foundation_model_experiment(data_dir, device, teacher_epochs=25, student
                           f"{student_params * 4 / (1024*1024):.1f}"]
         })
         performance_summary.to_csv(results_dir / 'performance_summary.csv', index=False)
-        print(f"📊 Performance summary saved to: performance_summary.csv")
+        print(f" Performance summary saved to: performance_summary.csv")
         
         highlights = {
             'Key Achievements': [
@@ -216,8 +215,8 @@ def run_foundation_model_experiment(data_dir, device, teacher_epochs=25, student
         with open(results_dir / 'research_highlights.json', 'w') as f:
             json.dump(highlights, f, indent=2)
         
-        print(f"\n📁 All results saved to: {results_dir}")
-        print("📋 Files generated:")
+        print(f"\n All results saved to: {results_dir}")
+        print(" Files generated:")
         print("   • training_curves.png - Training progress visualization")
         print("   • model_comparison.png - Performance and efficiency comparison")
         print("   • confusion_matrices.png - Classification results")
@@ -246,7 +245,7 @@ def run_foundation_model_experiment(data_dir, device, teacher_epochs=25, student
         }
         
     except Exception as e:
-        print(f"❌ Experiment failed: {e}")
+        print(f" Experiment failed: {e}")
         import traceback
         traceback.print_exc()
         
@@ -257,19 +256,19 @@ def run_foundation_model_experiment(data_dir, device, teacher_epochs=25, student
             'timestamp': time.strftime('%Y-%m-%d %H:%M:%S')
         }
         torch.save(error_info, results_dir / 'error_log.pth')
-        print(f"🔍 Error information saved to: {results_dir}/error_log.pth")
+        print(f" Error information saved to: {results_dir}/error_log.pth")
         raise
 
 if __name__ == "__main__":
     # Update this path according to your dataset location
     DATASET_PATH = '/kaggle/input/covid-dataset/dataset_split'
     
-    print("🎓 EXECUTING FOUNDATION MODEL COVID DETECTION EXPERIMENT")
+    print(" EXECUTING FOUNDATION MODEL COVID DETECTION EXPERIMENT")
     print("="*70)
     
     # Verify dataset
     if not os.path.exists(DATASET_PATH):
-        print(f"❌ Dataset not found at {DATASET_PATH}")
+        print(f" Dataset not found at {DATASET_PATH}")
         print("Please update DATASET_PATH with correct path")
         alternative_paths = [
             '/kaggle/input/covid19-dataset/dataset_split',
@@ -280,16 +279,16 @@ if __name__ == "__main__":
         for alt_path in alternative_paths:
             if os.path.exists(alt_path):
                 DATASET_PATH = alt_path
-                print(f"✅ Found dataset at alternative path: {DATASET_PATH}")
+                print(f" Found dataset at alternative path: {DATASET_PATH}")
                 break
         else:
-            print("❌ No dataset found. Please check the dataset path.")
+            print(" No dataset found. Please check the dataset path.")
             exit()
     else:
-        print(f"✅ Dataset found at {DATASET_PATH}")
+        print(f" Dataset found at {DATASET_PATH}")
     
     # Verify dataset structure
-    print("📁 Dataset structure:")
+    print(" Dataset structure:")
     for split in ['train', 'val', 'test']:
         split_path = os.path.join(DATASET_PATH, split)
         if os.path.exists(split_path):
@@ -299,42 +298,42 @@ if __name__ == "__main__":
             print(f"   {split}/: Not found")
     
     try:
-        print(f"\n🚀 Starting comprehensive foundation model experiment...")
+        print(f"\n Starting comprehensive foundation model experiment...")
         start_time = time.time()
         
         results = run_foundation_model_experiment(
             data_dir=DATASET_PATH,
             device=device,
-            teacher_epochs=1,  # Reduced for demo - increase to 25-35 for full training
-            student_epochs=1   # Reduced for demo - increase to 50-60 for full training
+            teacher_epochs=100,  # Reduced to 25-35 if tiem is short
+            student_epochs=100   # Reduced to 50-60 if tiem is short
         )
         
         end_time = time.time()
         total_time = end_time - start_time
         
         print("\n" + "="*70)
-        print("🎓 FOUNDATION MODEL EXPERIMENT COMPLETED!")
+        print(" FOUNDATION MODEL EXPERIMENT COMPLETED!")
         print("="*70)
-        print(f"⏱️ Total execution time: {total_time/3600:.2f} hours")
+        print(f" Total execution time: {total_time/3600:.2f} hours")
         
         if results['success']:
-            print("🎉 SUCCESS! 99%+ ACCURACY ACHIEVED! 🎉")
-            print(f"📈 Final student accuracy: {results['student_accuracy']:.2f}%")
-            print(f"⚡ Parameter reduction: {results['reduction_ratio']:.1f}x")
-            print(f"💾 Model size: {results['model_size_mb']:.1f} MB")
+            print(" SUCCESS! 99%+ ACCURACY ACHIEVED! ")
+            print(f" Final student accuracy: {results['student_accuracy']:.2f}%")
+            print(f"Parameter reduction: {results['reduction_ratio']:.1f}x")
+            print(f" Model size: {results['model_size_mb']:.1f} MB")
             
-            print(f"\n🎯 Key Achievements:")
+            print(f"\n Key Achievements:")
             print(f"   • State-of-the-art accuracy with lightweight model")
             print(f"   • Successful knowledge transfer from foundation models")
             print(f"   • Deployment-ready architecture")
         else:
-            print(f"📊 Progress: {results['student_accuracy']:.2f}% (Target: 99%)")
-            print(f"💡 Consider:")
+            print(f"Progress: {results['student_accuracy']:.2f}% (Target: 99%)")
+            print(f" Consider:")
             print(f"   • Fine-tuning hyperparameters")
             print(f"   • Adding more foundation models")
         
-        print(f"\n📁 All results available in: ./results/")
-        print(f"\n📋 FINAL METRICS SUMMARY:")
+        print(f"\n All results available in: ./results/")
+        print(f"\n FINAL METRICS SUMMARY:")
         print(f"{'='*50}")
         print("Teacher Model:")
         print(f"  Accuracy: {results['teacher_accuracy']:.2f}%")
@@ -350,13 +349,13 @@ if __name__ == "__main__":
         print(f"  Accuracy Retention: {(results['student_accuracy']/results['teacher_accuracy'])*100:.1f}%")
         
     except Exception as e:
-        print(f"❌ Experiment failed: {e}")
-        print("🔍 Check error_log.pth for detailed debugging information")
-        print("💡 Common issues:")
+        print(f" Experiment failed: {e}")
+        print(" Check error_log.pth for detailed debugging information")
+        print(" Common issues:")
         print("   • Insufficient GPU memory (reduce batch_size)")
         print("   • Missing dependencies (check pip installs)")
         print("   • Dataset path issues (verify DATASET_PATH)")
     
     print("\n" + "="*70)
-    print("🎓 FOUNDATION MODEL COVID DETECTION SYSTEM COMPLETE!")
+    print(" FOUNDATION MODEL COVID DETECTION SYSTEM COMPLETE!")
     print("="*70)
