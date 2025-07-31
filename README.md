@@ -4,7 +4,7 @@
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-ee4c2c?logo=pytorch&logoColor=white)](https://pytorch.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## 🎯 **COVID Detection Accuracy with 300x Parameter Reduction**
+## 🎯 **COVID Detection Accuracy with 297x Parameter Reduction**
 
 A cutting-edge **foundation model ensemble** with **knowledge distillation** framework for COVID-19 detection from chest CT scans. This system combines **BiomedCLIP**, **DINOv2**, and **OpenAI CLIP** foundation models to create lightweight, deployable models suitable for resource-constrained clinical environments.
 
@@ -37,9 +37,9 @@ python main.py
 
 | Metric | Teacher Ensemble | Lightweight Student | Improvement |
 |--------|------------------|---------------------|-------------|
-| **Accuracy** | 98.77% | **99.12%** | +0.35% |
+| **Accuracy** | 98.77% | **96.12%** | -2.21 |
 | **Parameters** | 166.2M | **558K** | **298x reduction** |
-| **Model Size** | 664 MB | **2.2 MB** | **300x smaller** |
+| **Model Size** | 435 MB | **1.5 MB** | **297x smaller** |
 | **AUC-ROC** | 0.9984 | **0.9921** | Maintained |
 | **Inference Speed** | 45ms | **8ms** | **5.6x faster** |
 
@@ -125,11 +125,6 @@ foundation-covid-detection/
 ├── 📁 dataset.py           # Enhanced data pipeline
 ├── 📋 requirements.txt     # Dependencies
 ├── 📖 README.md           # This file
-└── 📁 assets/             # Documentation images
-    ├── training_curves.png
-    ├── model_comparison.png
-    ├── confusion_matrices.png
-    └── roc_curves.png
 ```
 
 ---
@@ -216,7 +211,6 @@ dataset_split/
 
 ### **Supported Datasets**
 - **SARS-COV-2 CT-scan Dataset** ([Kaggle](https://www.kaggle.com/plameneduardo/sarscov2-ctscan-dataset))
-- **COVID-19 Radiography Database** ([Kaggle](https://www.kaggle.com/tawsifurrahman/covid19-radiography-database))
 - **Custom datasets** following the above structure
 
 ### **Dataset Configuration**
@@ -460,27 +454,6 @@ covid_prob = predict_covid(patient_scan)
 print(f"COVID-19 Probability: {covid_prob:.3f}")
 ```
 
-### **Research Extensions**
-- **Multi-class Classification**: Extend to Normal/Pneumonia/COVID
-- **Segmentation**: Add lesion segmentation capabilities  
-- **Cross-modal**: Integrate with clinical text data
-- **Federated Learning**: Distributed training across hospitals
-- **Explainability**: Add Grad-CAM visualization
-- **Uncertainty Quantification**: Bayesian neural networks
-
-### **Publication Metrics**
-```python
-# Extract key metrics for paper
-results = torch.load('results/foundation_experiment_results.pth')
-
-print(f"Student Accuracy: {results['student_accuracy']:.2f}%")
-print(f"Parameter Reduction: {results['reduction_ratio']:.1f}x") 
-print(f"Model Size: {results['model_size_mb']:.1f} MB")
-print(f"AUC-ROC: {results['comprehensive_metrics']['student_auc']:.4f}")
-```
-
----
-
 ## 🤝 **Contributing**
 
 ### **Development Setup**
@@ -590,7 +563,7 @@ python -c "from dataset import ResearchGradeCOVIDDataset; ResearchGradeCOVIDData
 ```
 
 ### **Performance Optimization**
-- **GPU**: Use Tesla V100/A100 for fastest training
+- **GPU**: Use Tesla V100 for fastest training
 - **CPU**: 16+ cores recommended for CPU-only training  
 - **Mixed Precision**: Reduces memory usage by 50%
 - **DataLoader**: Increase num_workers for faster data loading
@@ -613,10 +586,10 @@ python -c "from dataset import ResearchGradeCOVIDDataset; ResearchGradeCOVIDData
 ## 📊 **Project Stats**
 
 **📈 Impact Metrics:**
-- **99.12% Accuracy** - State-of-the-art COVID detection
-- **300x Compression** - Massive parameter reduction
+- **96.25% Accuracy** - State-of-the-art COVID detection
+- **297x Compression** - Massive parameter reduction
 - **<10ms Inference** - Real-time clinical deployment
-- **2.2 MB Model** - Edge device compatible
+- **1.5 MB Model** - Edge device compatible
 
 ---
 
@@ -624,7 +597,7 @@ python -c "from dataset import ResearchGradeCOVIDDataset; ResearchGradeCOVIDData
 
 ### 🎯 **Ready to achieve 99%+ COVID detection accuracy?**
 
-**[⭐ Star this repo](https://github.com/yourusername/foundation-covid-detection)** • **[🍴 Fork it](https://github.com/yourusername/foundation-covid-detection/fork)** 
+**[⭐ Star this repo](https://github.com/HassanRasheed91/FD-MVNet-Foundation-Distilled-Medical-Vision-Network)** • **[🍴 Fork it](https://github.com/HassanRasheed91/FD-MVNet-Foundation-Distilled-Medical-Vision-Network/fork)** 
 
 **Built with ❤️ for advancing medical AI research**
 
