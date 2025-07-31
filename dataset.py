@@ -9,11 +9,7 @@ import albumentations as A
 from albumentations.pytorch import ToTensorV2
 
 def get_enhanced_transforms():
-    """
-    Define enhanced training and validation image transformations using Albumentations.
-    Returns:
-        train_transform, val_transform (albumentations.Compose objects)
-    """
+    
     train_transform = A.Compose([
         A.Resize(224, 224),
         # Geometric augmentations suitable for medical images
