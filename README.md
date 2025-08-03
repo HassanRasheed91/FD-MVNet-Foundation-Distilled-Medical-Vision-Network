@@ -208,7 +208,6 @@ dataset_split/
 
 ### **Supported Datasets**
 - **SARS-COV-2 CT-scan Dataset** ([Kaggle](https://www.kaggle.com/plameneduardo/sarscov2-ctscan-dataset))
-- **COVID-19 Radiography Database** ([Kaggle](https://www.kaggle.com/tawsifurrahman/covid19-radiography-database))
 - **Custom datasets** following the above structure
 
 ---
