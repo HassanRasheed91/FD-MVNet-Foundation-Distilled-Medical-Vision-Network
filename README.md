@@ -4,7 +4,7 @@
 [![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-ee4c2c?logo=pytorch&logoColor=white)](https://pytorch.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## 🎯 **COVID Detection Accuracy with 297x Parameter Reduction**
+## 🎯 **97.59% COVID Detection Accuracy with 297x Parameter Reduction**
 
 A cutting-edge **foundation model ensemble** with **knowledge distillation** framework for COVID-19 detection from chest CT scans. This system combines **BiomedCLIP**, **DINOv2**, and **OpenAI CLIP** foundation models to create lightweight, deployable models suitable for resource-constrained clinical environments.
 
@@ -25,8 +25,8 @@ A cutting-edge **foundation model ensemble** with **knowledge distillation** fra
 
 ### **Option 2: Local Setup**
 ```bash
-git clone https://github.com/yourusername/foundation-covid-detection.git
-cd foundation-covid-detection
+git clone https://github.com/HassanRasheed91/FD-MVNet-Foundation-Distilled-Medical-Vision-Network.git
+cd FD-MVNet-Foundation-Distilled-Medical-Vision-Network
 pip install -r requirements.txt
 python main.py
 ```
@@ -37,15 +37,15 @@ python main.py
 
 | Metric | Teacher Ensemble | Lightweight Student | Improvement |
 |--------|------------------|---------------------|-------------|
-| **Accuracy** | 98.77% | **96.12%** | -2.21 |
-| **Parameters** | 166.2M | **558K** | **298x reduction** |
-| **Model Size** | 435 MB | **1.5 MB** | **297x smaller** |
-| **AUC-ROC** | 0.9984 | **0.9921** | Maintained |
+| **Accuracy** | 98.66% | **97.59%** | -1.07% |
+| **Parameters** | 435.0M | **1.5M** | **297x reduction** |
+| **Model Size** | 1740 MB | **6.0 MB** | **290x smaller** |
+| **AUC-ROC** | 0.9985 | **0.9958** | Maintained |
 | **Inference Speed** | 45ms | **8ms** | **5.6x faster** |
 
 ### 🎯 **Clinical Performance**
 - **Sensitivity**: 96.8% (COVID detection)
-- **Specificity**: 95.7% (Non-COVID detection)  
+- **Specificity**: 97.6% (Non-COVID detection)  
 - **Deployment Ready**: Edge device compatible
 - **Real-time**: <10ms inference on CPU
 
@@ -54,21 +54,20 @@ python main.py
 ## 🔬 **Technical Innovation**
 
 ### **Foundation Model Ensemble Teacher**
-```python
+```
 ┌─────────────────────────────────────────────────────────┐
-│  🧠 Foundation Model Teacher Ensemble (166.2M params)  │
+│  🧠 Foundation Model Teacher Ensemble (435.0M params)  │
 ├─────────────────────────────────────────────────────────┤
 │  🔬 BiomedCLIP     │  Medical-specific representations  │
 │  🎯 DINOv2         │  Self-supervised visual features   │  
 │  👁️ OpenAI CLIP    │  General vision understanding      │
-│  🤖 Classical CNNs │  ResNet152, EfficientNet-B7       │
 └─────────────────────────────────────────────────────────┘
                               │
                     📚 Knowledge Distillation
                               │
                               ▼
 ┌─────────────────────────────────────────────────────────┐
-│     💡 Lightweight Student (558K params)               │
+│     💡 Lightweight Student (1.5M params)               │
 ├─────────────────────────────────────────────────────────┤
 │  🏗️ Medical-Optimized Architecture                     │  
 │  ⚡ Efficient Blocks with SE Attention                 │
@@ -85,35 +84,32 @@ python main.py
 
 ---
 
+## 📊 **Research Results**
+
+### **Published Performance** (From Paper: *Computers in Biology and Medicine*, 2021)
+Based on the **Sugeno fuzzy integral ensemble** with four pre-trained models:
+- **Paper Accuracy**: 98.93%
+- **Paper Sensitivity**: 98.93%
+- **Models Used**: VGG-11, GoogLeNet, SqueezeNet v1.1, Wide ResNet-50-2
+- **Dataset**: SARS-COV-2 CT-scan dataset (2,481 images)
+
+### **Current Implementation Results**
+Our **foundation model enhanced** version achieves:
+- **Student Accuracy**: 97.59%
+- **Teacher Accuracy**: 98.66%
+- **Parameter Reduction**: 297x
+- **Model Compression**: 290x size reduction
+- **Maintained AUC**: 0.9958 vs 0.9985
+
+### **Key Improvements Over Paper**
+1. **Foundation Model Integration**: Added BiomedCLIP, DINOv2, OpenAI CLIP
+2. **Extreme Compression**: 297x parameter reduction vs traditional ensemble
+3. **Real-time Deployment**: 6MB model size for edge devices
+4. **Medical Optimization**: Enhanced augmentations and architecture
+
+---
 
 ## 🏗️ **Architecture Overview**
-
-### **System Components**
-
-```mermaid
-graph TD
-    A[Input CT Scan] --> B[Data Preprocessing]
-    B --> C[Foundation Model Ensemble]
-    C --> D[BiomedCLIP<br/>Medical Knowledge]
-    C --> E[DINOv2<br/>Visual Features]
-    C --> F[OpenAI CLIP<br/>General Vision]
-    C --> G[Classical CNNs<br/>Fallback Models]
-    
-    D --> H[Ensemble Fusion]
-    E --> H
-    F --> H
-    G --> H
-    
-    H --> I[Knowledge Distillation]
-    I --> J[Lightweight Student<br/>558K params]
-    J --> K[COVID/Non-COVID<br/>Prediction]
-    
-    style D fill:#e1f5fe
-    style E fill:#f3e5f5  
-    style F fill:#e8f5e8
-    style J fill:#fff3e0
-    style K fill:#ffebee
-```
 
 ### **File Structure**
 ```
@@ -125,9 +121,14 @@ foundation-covid-detection/
 ├── 📁 dataset.py           # Enhanced data pipeline
 ├── 📋 requirements.txt     # Dependencies
 ├── 📖 README.md           # This file
+└── 📁 results/            # Generated outputs
+    ├── training_curves.png
+    ├── model_comparison.png
+    ├── confusion_matrices.png
+    ├── roc_curves.png
+    ├── performance_summary.csv
+    └── foundation_models.pth
 ```
-
----
 
 ## 🛠️ **Installation & Setup**
 
@@ -179,10 +180,6 @@ pip install -r requirements.txt
 # Method 2: Using conda
 conda env create -f environment.yml
 conda activate covid-detection
-
-# Method 3: Using Docker
-docker build -t covid-detection .
-docker run --gpus all -v $(pwd):/workspace covid-detection
 ```
 
 ---
@@ -211,16 +208,8 @@ dataset_split/
 
 ### **Supported Datasets**
 - **SARS-COV-2 CT-scan Dataset** ([Kaggle](https://www.kaggle.com/plameneduardo/sarscov2-ctscan-dataset))
+- **COVID-19 Radiography Database** ([Kaggle](https://www.kaggle.com/tawsifurrahman/covid19-radiography-database))
 - **Custom datasets** following the above structure
-
-### **Dataset Configuration**
-```python
-# Update dataset path in main.py
-DATASET_PATH = '/path/to/your/dataset_split'
-
-# Supported image formats
-SUPPORTED_FORMATS = ['.png', '.jpg', '.jpeg', '.PNG', '.JPG', '.JPEG']
-```
 
 ---
 
@@ -239,7 +228,7 @@ python main.py
 # 3️⃣ Stage 1: Training Foundation Teacher (25 epochs)...
 # 4️⃣ Stage 2: Training Student with Distillation (40 epochs)...
 # 5️⃣ Comprehensive Evaluation & Visualization...
-# 🏆 SUCCESS! ACHIEVED 99%+ ACCURACY!
+# 🏆 SUCCESS! ACHIEVED 97%+ ACCURACY!
 ```
 
 ### **Custom Configuration**
@@ -263,7 +252,6 @@ print(f"Parameter Reduction: {results['reduction_ratio']:.1f}x")
 # Use individual components
 from models import FoundationModelTeacher, LightweightMedicalStudent
 from training import FoundationModelTrainer
-from visualization import ResearchVisualizationEngine
 
 # Initialize models
 teacher = FoundationModelTeacher(num_classes=2)
@@ -334,59 +322,6 @@ Where:
 - **FLOPS**: Floating point operations
 - **Memory Usage**: Peak GPU/CPU memory
 
-### **Clinical Validation**
-- **Confusion Matrix**: Detailed classification results
-- **ROC Curves**: Sensitivity vs Specificity tradeoffs
-- **PR Curves**: Precision vs Recall analysis
-- **Class-wise Performance**: Per-class detailed metrics
-
----
-
-## 🔧 **Advanced Configuration**
-
-### **Model Architecture Tuning**
-```python
-# Adjust student model capacity
-student = LightweightMedicalStudent(
-    num_classes=2,
-    width_multiplier=1.5,    # Increase for more capacity
-    dropout_rate=0.3         # Adjust regularization
-)
-
-# Custom foundation model selection
-teacher = FoundationModelTeacher(
-    use_biomedclip=True,     # Medical-specific features
-    use_dinov2=True,         # Self-supervised features
-    use_clip=False,          # Disable general CLIP
-    use_classical=True       # Include ResNet/EfficientNet
-)
-```
-
-### **Training Hyperparameters**
-```python
-# Advanced training configuration
-trainer = FoundationModelTrainer(
-    device='cuda',
-    mixed_precision=True,    # Enable AMP for speed
-    gradient_accumulation=4, # Simulate larger batch size
-    warmup_epochs=5,         # Learning rate warmup
-    weight_decay=0.01,       # L2 regularization
-    label_smoothing=0.1      # Improve generalization
-)
-```
-
-### **Data Pipeline Customization**
-```python
-# Custom data augmentation
-from dataset import get_enhanced_transforms
-
-train_transform, val_transform = get_enhanced_transforms(
-    image_size=256,          # Larger input resolution
-    aug_strength='strong',   # Augmentation intensity
-    medical_specific=True    # Medical imaging optimizations
-)
-```
-
 ---
 
 ## 📁 **Output Files**
@@ -419,13 +354,6 @@ results/
 │   └── foundation_experiment_results.pth # Complete results
 ```
 
-### **Research Publication Package**
-- **Figures**: High-resolution (300 DPI) publication-ready plots
-- **Tables**: LaTeX-formatted performance comparisons
-- **Metrics**: Comprehensive evaluation statistics
-- **Models**: Deployable trained weights
-- **Code**: Reproducible implementation
-
 ---
 
 ## 🔬 **Research Applications**
@@ -436,7 +364,7 @@ results/
 import torch
 from models import LightweightMedicalStudent
 
-# Load lightweight model (2.2 MB)
+# Load lightweight model (6.0 MB)
 model = LightweightMedicalStudent(num_classes=2)
 checkpoint = torch.load('results/student_best.pth')
 model.load_state_dict(checkpoint)
@@ -454,35 +382,13 @@ covid_prob = predict_covid(patient_scan)
 print(f"COVID-19 Probability: {covid_prob:.3f}")
 ```
 
-## 🤝 **Contributing**
-
-### **Development Setup**
-```bash
-# Clone repository
-git clone https://github.com/yourusername/foundation-covid-detection.git
-cd foundation-covid-detection
-
-# Create development environment
-conda create -n covid-dev python=3.9
-conda activate covid-dev
-pip install -r requirements-dev.txt
-
-# Install pre-commit hooks
-pre-commit install
-```
-
-### **Contribution Guidelines**
-1. **Fork** the repository
-2. **Create** feature branch (`git checkout -b feature/amazing-feature`)
-3. **Commit** changes (`git commit -m 'Add amazing feature'`)
-4. **Push** to branch (`git push origin feature/amazing-feature`)
-5. **Open** Pull Request
-
-### **Development Workflow**
-- **Code Style**: Black formatting, PEP 8 compliance
-- **Documentation**: Docstrings for all functions
-- **Testing**: Unit tests for critical components  
-- **Reproducibility**: Fixed random seeds, deterministic operations
+### **Research Extensions**
+- **Multi-class Classification**: Extend to Normal/Pneumonia/COVID
+- **Segmentation**: Add lesion segmentation capabilities  
+- **Cross-modal**: Integrate with clinical text data
+- **Federated Learning**: Distributed training across hospitals
+- **Explainability**: Add Grad-CAM visualization
+- **Uncertainty Quantification**: Bayesian neural networks
 
 ---
 
@@ -505,25 +411,29 @@ pre-commit install
 
 ---
 
-## 📜 **License**
+## 🤝 **Contributing**
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+### **Development Setup**
+```bash
+# Clone repository
+git clone https://github.com/HassanRasheed91/FD-MVNet-Foundation-Distilled-Medical-Vision-Network.git
+cd FD-MVNet-Foundation-Distilled-Medical-Vision-Network
 
+# Create development environment
+conda create -n covid-dev python=3.9
+conda activate covid-dev
+pip install -r requirements-dev.txt
+
+# Install pre-commit hooks
+pre-commit install
 ```
-MIT License
 
-Copyright (c) 2024 Your Name
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-```
+### **Contribution Guidelines**
+1. **Fork** the repository
+2. **Create** feature branch (`git checkout -b feature/amazing-feature`)
+3. **Commit** changes (`git commit -m 'Add amazing feature'`)
+4. **Push** to branch (`git push origin feature/amazing-feature`)
+5. **Open** Pull Request
 
 ---
 
@@ -563,14 +473,37 @@ python -c "from dataset import ResearchGradeCOVIDDataset; ResearchGradeCOVIDData
 ```
 
 ### **Performance Optimization**
-- **GPU**: Use Tesla V100 for fastest training
+- **GPU**: Use Tesla V100/A100 for fastest training
 - **CPU**: 16+ cores recommended for CPU-only training  
 - **Mixed Precision**: Reduces memory usage by 50%
 - **DataLoader**: Increase num_workers for faster data loading
 
 ### **Getting Help**
 - 📧 **Email**: 221980038@gift.edu.pk
-- 💬 **Issues**: [GitHub Issues](https://github.com/HassanRasheed91/foundation-covid-detection/issues)
+- 💬 **Issues**: [GitHub Issues](https://github.com/HassanRasheed91/FD-MVNet-Foundation-Distilled-Medical-Vision-Network/issues)
+
+---
+
+## 📜 **License**
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+```
+MIT License
+
+Copyright (c) 2024 Hassan Rasheed
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+```
+
 ---
 
 ## 🌟 **Acknowledgments**
@@ -586,16 +519,16 @@ python -c "from dataset import ResearchGradeCOVIDDataset; ResearchGradeCOVIDData
 ## 📊 **Project Stats**
 
 **📈 Impact Metrics:**
-- **96.25% Accuracy** - State-of-the-art COVID detection
+- **97.59% Accuracy** - High-performance COVID detection
 - **297x Compression** - Massive parameter reduction
 - **<10ms Inference** - Real-time clinical deployment
-- **1.5 MB Model** - Edge device compatible
+- **6.0 MB Model** - Edge device compatible
 
 ---
 
 <div align="center">
 
-### 🎯 **Ready to achieve 99%+ COVID detection accuracy?**
+### 🎯 **Ready to achieve 97%+ COVID detection accuracy?**
 
 **[⭐ Star this repo](https://github.com/HassanRasheed91/FD-MVNet-Foundation-Distilled-Medical-Vision-Network)** • **[🍴 Fork it](https://github.com/HassanRasheed91/FD-MVNet-Foundation-Distilled-Medical-Vision-Network/fork)** 
 
