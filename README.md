@@ -472,7 +472,7 @@ python -c "from dataset import ResearchGradeCOVIDDataset; ResearchGradeCOVIDData
 ```
 
 ### **Performance Optimization**
-- **GPU**: Use Tesla V100/A100 for fastest training
+- **GPU**: Use Tesla V100 for fastest training
 - **CPU**: 16+ cores recommended for CPU-only training  
 - **Mixed Precision**: Reduces memory usage by 50%
 - **DataLoader**: Increase num_workers for faster data loading
