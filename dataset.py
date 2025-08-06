@@ -3,13 +3,16 @@ from pathlib import Path
 import numpy as np
 import cv2
 import torch
-from torch.utils.data import Dataset, WeightedRandomSampler
+from torch.utils.data import Dataset, DataLoader, WeightedRandomSampler
 from PIL import Image
 import albumentations as A
 from albumentations.pytorch import ToTensorV2
 
 def get_enhanced_transforms():
-    
+    """
+    Get enhanced transforms for training and validation/test.
+    Note: Same transform used for validation and test to ensure consistency.
+    """
     train_transform = A.Compose([
         A.Resize(224, 224),
         # Geometric augmentations suitable for medical images
@@ -31,29 +34,35 @@ def get_enhanced_transforms():
         ToTensorV2()
     ])
     
-    val_transform = A.Compose([
+    # IMPORTANT: Use same transform for validation AND test to ensure consistency
+    val_test_transform = A.Compose([
         A.Resize(224, 224),
         A.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
         ToTensorV2()
     ])
     
-    return train_transform, val_transform
+    return train_transform, val_test_transform
 
 class ResearchGradeCOVIDDataset(Dataset):
-    """
-    Custom Dataset for COVID detection, with enhanced loading and validation.
-    Expects a directory structure with subfolders for each class (e.g., 'COVID', 'NonCOVID').
-    """
+    
     def __init__(self, data_dir, split='train', transform=None):
+        
         self.data_dir = Path(data_dir)
         self.split = split
         self.transform = transform
         self.images = []
         self.labels = []
+        
+        # Validate split parameter
+        valid_splits = ['train', 'val', 'test']
+        if split not in valid_splits:
+            raise ValueError(f"Split must be one of {valid_splits}, got '{split}'")
+        
         self._load_dataset()
         self._validate_dataset()
     
     def _load_dataset(self):
+        """Load dataset for the specified split."""
         split_dir = self.data_dir / self.split
         if not split_dir.exists():
             raise ValueError(f"Split directory {split_dir} not found")
@@ -83,7 +92,7 @@ class ResearchGradeCOVIDDataset(Dataset):
                         self.labels.append(label)
                         folder_images += 1
             
-            print(f"[INFO] Loaded {folder_images} {label_name} images from {folder_name}")
+            print(f"[INFO] Loaded {folder_images} {label_name} images from {folder_name} ({self.split} split)")
     
     def _validate_image(self, img_path):
         """Validate image file by checking size, readability, and dimensions."""
@@ -123,12 +132,23 @@ class ResearchGradeCOVIDDataset(Dataset):
         
         balance_ratio = min(covid_count, non_covid_count) / max(covid_count, non_covid_count)
         print(f"[INFO] Class balance ratio: {balance_ratio:.2f}")
+        
+        # Additional info for test set
+        if self.split == 'test':
+            print(f"[INFO]  TEST SET: This split should ONLY be used for final evaluation")
     
     def get_class_weights(self):
-        """Calculate class weights for balanced training (to handle class imbalance)."""
+        """Calculate class weights for balanced training (mainly for training set)."""
+        if self.split != 'train':
+            print(f"[INFO] Class weights typically used only for training, but calculating for {self.split}")
+        
         covid_count = sum(self.labels)
         non_covid_count = len(self.labels) - covid_count
         total_count = len(self.labels)
+        
+        if covid_count == 0 or non_covid_count == 0:
+            print(f"[WARNING] Cannot calculate class weights - missing class in {self.split}")
+            return torch.tensor([1.0, 1.0], dtype=torch.float32)
         
         covid_weight = total_count / (2 * covid_count)
         non_covid_weight = total_count / (2 * non_covid_count)
@@ -136,10 +156,27 @@ class ResearchGradeCOVIDDataset(Dataset):
         return torch.tensor([non_covid_weight, covid_weight], dtype=torch.float32)
     
     def get_sampler(self):
-        """Get a weighted random sampler for balanced training."""
+        """Get a weighted random sampler for balanced training (only for training set)."""
+        if self.split != 'train':
+            raise ValueError(f"Weighted sampling should only be used for training set, not {self.split}")
+        
         class_weights = self.get_class_weights()
         sample_weights = [class_weights[label] for label in self.labels]
         return WeightedRandomSampler(sample_weights, len(sample_weights))
+    
+    def get_dataset_info(self):
+        """Get comprehensive dataset information."""
+        covid_count = sum(self.labels)
+        non_covid_count = len(self.labels) - covid_count
+        
+        return {
+            'split': self.split,
+            'total_images': len(self.images),
+            'covid_images': covid_count,
+            'non_covid_images': non_covid_count,
+            'class_balance_ratio': min(covid_count, non_covid_count) / max(covid_count, non_covid_count) if max(covid_count, non_covid_count) > 0 else 0,
+            'is_test_set': self.split == 'test'
+        }
     
     def __len__(self):
         return len(self.images)
@@ -171,3 +208,68 @@ class ResearchGradeCOVIDDataset(Dataset):
                 transformed = self.transform(image=black_image)
                 black_image = transformed['image']
             return black_image, 0
+
+def create_data_loaders(data_dir, batch_size=16, num_workers=4):
+    """
+    Create data loaders for train/val/test splits with proper data leakage prevention.
+
+    """
+    print(" CREATING DATA LOADERS WITH NO DATA LEAKAGE")
+    print("="*50)
+    
+    # Get transforms
+    train_transform, val_test_transform = get_enhanced_transforms()
+    
+    # Create datasets for all splits
+    train_dataset = ResearchGradeCOVIDDataset(data_dir, 'train', train_transform)
+    val_dataset = ResearchGradeCOVIDDataset(data_dir, 'val', val_test_transform)
+    test_dataset = ResearchGradeCOVIDDataset(data_dir, 'test', val_test_transform)
+    
+    # Create samplers and loaders
+    train_sampler = train_dataset.get_sampler()  # Balanced sampling for training
+    
+    train_loader = DataLoader(
+        train_dataset, 
+        batch_size=batch_size, 
+        sampler=train_sampler,
+        num_workers=num_workers, 
+        pin_memory=True, 
+        persistent_workers=True
+    )
+    
+    val_loader = DataLoader(
+        val_dataset, 
+        batch_size=batch_size, 
+        shuffle=False,  # No shuffling for validation
+        num_workers=num_workers, 
+        pin_memory=True, 
+        persistent_workers=True
+    )
+    
+    test_loader = DataLoader(
+        test_dataset, 
+        batch_size=batch_size, 
+        shuffle=False,  # No shuffling for test
+        num_workers=num_workers, 
+        pin_memory=True, 
+        persistent_workers=True
+    )
+    
+    # Print dataset information
+    train_info = train_dataset.get_dataset_info()
+    val_info = val_dataset.get_dataset_info()
+    test_info = test_dataset.get_dataset_info()
+    
+    print(f" TRAIN SET: {train_info['total_images']} images "
+          f"(COVID: {train_info['covid_images']}, Non-COVID: {train_info['non_covid_images']})")
+    print(f" VAL SET:   {val_info['total_images']} images "
+          f"(COVID: {val_info['covid_images']}, Non-COVID: {val_info['non_covid_images']})")
+    print(f" TEST SET:  {test_info['total_images']} images "
+          f"(COVID: {test_info['covid_images']}, Non-COVID: {test_info['non_covid_images']})")
+    
+    print(f"\n DATA LEAKAGE PREVENTION:")
+    print(f"   - Train set: Uses data augmentation and balanced sampling")
+    print(f"   - Val set: Uses same transforms as test set (no augmentation)")
+    print(f"   - Test set: HELD-OUT, used only for final evaluation")
+    
+    return train_loader, val_loader, test_loader
