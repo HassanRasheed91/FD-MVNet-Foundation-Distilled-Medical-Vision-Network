@@ -1,5 +1,3 @@
-# Fixed main.py - Critical corrections for result accuracy mismatch
-
 import warnings
 import time
 import os
@@ -286,3 +284,4 @@ if __name__ == "__main__":
     print("\n" + "="*70)
     print(" COVID DETECTION SYSTEM COMPLETE!")
     print("="*70)
+
