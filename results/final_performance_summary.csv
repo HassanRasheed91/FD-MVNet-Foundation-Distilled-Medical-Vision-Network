@@ -1,0 +1,3 @@
+Model,Test Accuracy (%),Val Accuracy (%),Precision,Recall,F1-Score,AUC-ROC,Parameters,Size (MB)
+Teacher Ensemble,99.20,98.66,0.9920,0.9920,0.9920,0.9997,"435,012,363",1659.4
+Lightweight Student,97.86,97.59,0.9786,0.9786,0.9786,0.9949,"1,464,530",5.6

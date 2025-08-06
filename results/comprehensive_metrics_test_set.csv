@@ -1,0 +1,13 @@
+Metric,Teacher_Ensemble,Lightweight_Student
+Overall Accuracy,0.9920,0.9786
+Weighted Precision,0.9920,0.9786
+Weighted Recall,0.9920,0.9786
+Weighted F1-Score,0.9920,0.9786
+AUC-ROC,0.9997,0.9949
+Average Precision,0.9998,0.9953
+Non-COVID Precision,0.9892,0.9836
+COVID Precision,0.9947,0.9737
+Non-COVID Recall,0.9946,0.9730
+COVID Recall,0.9894,0.9840
+Non-COVID F1,0.9919,0.9783
+COVID F1,0.9920,0.9788
